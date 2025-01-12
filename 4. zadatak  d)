@@ -1,0 +1,18 @@
+import can
+
+def main():
+    bus = can.interface.Bus(channel='can0', bustype='socketcan')  
+    print("Čekanje CAN poruka...")
+
+    try:
+        while True:
+            message = bus.recv()
+            if message:
+                print(f"ID: {hex(message.arbitration_id)}, DATA: {message.data.hex()}")
+    except KeyboardInterrupt:
+        print("\nPrekid programa.")
+    finally:
+        bus.shutdown()
+
+if __name__ == "__main__":
+    main()
