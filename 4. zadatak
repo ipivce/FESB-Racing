@@ -1,0 +1,34 @@
+#include <mcp_can.h>
+#include <SPI.h>
+
+#define CAN_CS_PIN 10  
+MCP_CAN CAN(CAN_CS_PIN); 
+
+void setup() {
+  Serial.begin(115200);
+  while (!Serial);
+
+  if (CAN.begin(MCP_ANY, CAN_500KBPS, MCP_8MHZ) == CAN_OK) {
+    Serial.println("CAN Bus inicijalizacija uspešna!");
+  } else {
+    Serial.println("Greška prilikom inicijalizacije CAN Bus-a.");
+    while (1);
+  }
+
+  CAN.setMode(MCP_NORMAL);
+  Serial.println("CAN Bus u normalnom režimu rada.");
+}
+
+void loop() {
+    unsigned char data[8] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
+  
+  unsigned long canId = 0x123;
+
+    if (CAN.sendMsgBuf(canId, 0, 8, data) == CAN_OK) {
+    Serial.println("Poruka uspešno poslata!");
+  } else {
+    Serial.println("Greška pri slanju poruke.");
+  }
+
+  delay(1000); 
+}
